@@ -42,7 +42,7 @@ export default function Home() {
 
           <div className={styles.heroVisual}>
             <div className={styles.heroCard}>
-              <img src="../public/imgs/massa-pomodoro.jpg" alt="Massa Bolonhesa" />
+              <img src="/imgs/massa-pomodoro.jpg" alt="Massa Bolonhesa" />
             </div>
           </div>
         </section>
