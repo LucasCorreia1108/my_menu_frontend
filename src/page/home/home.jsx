@@ -42,7 +42,7 @@ export default function Home() {
 
           <div className={styles.heroVisual}>
             <div className={styles.heroCard}>
-              <img src="../../../public/imgs/homepages/massa-pomodoro.jpg" alt="Massa Bolonhesa" />
+              <img src="../public/imgs/massa-pomodoro.jpg" alt="Massa Bolonhesa" />
             </div>
           </div>
         </section>
@@ -86,7 +86,7 @@ export default function Home() {
                   {plate.imgUrl ? (
                     <img src={plate.imgUrl} alt={plate.name} />
                   ) : (
-                    <NaturalFood />
+                    <img src="/imgs/massa-pomodoro.jpg" alt="Prato especial" />
                   )}
                 </div>
                 <div className={styles.productCardContent}>

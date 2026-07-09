@@ -3,19 +3,41 @@ import { TextField, Button } from "@mui/material";
 import styles from "./auth.module.css";
 import AuthServices from "../../services/auth";
 import Loading from "../loading/loading";
+import { useNavigate } from "react-router-dom";
+
+const getStoredAuth = () => {
+  const savedAuth = localStorage.getItem("auth");
+
+  if (!savedAuth) return null;
+
+  try {
+    return JSON.parse(savedAuth);
+  } catch {
+    return null;
+  }
+};
 
 export default function Auth() {
+  const navigate = useNavigate();
   const [formType, setFormType] = useState("login");
-  const [formData, setFormData] = useState(null);
+  const [formData, setFormData] = useState({});
   const { authLoading, login, signup } = AuthServices();
-
-  const authData = JSON.parse(localStorage.getItem("auth"));
+  const [authData, setAuthData] = useState(() => getStoredAuth());
 
   useEffect(() => {
-    if (authData) {
-      return window.location.replace("/profile");
+    const updateAuthData = () => setAuthData(getStoredAuth());
+
+    updateAuthData();
+    window.addEventListener("authChanged", updateAuthData);
+
+    return () => window.removeEventListener("authChanged", updateAuthData);
+  }, []);
+
+  useEffect(() => {
+    if (authData?.token) {
+      navigate("/profile", { replace: true });
     }
-  }, [authData])
+  }, [authData, navigate]);
  
 
   const handleChangeFormType = () => {
@@ -28,17 +50,17 @@ export default function Auth() {
   };
 
   const handleFormDataChange = (event) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [event.target.name]: event.target.value,
-    });
+    }));
   };
 
   const handleSubmitForm = (event) => {
     event.preventDefault();
     switch (formType) {
       case "login":
-       login(formData);
+        login(formData);
         break;
       case "Signup":
         if (formData.password !== formData.confirmPassword) {
@@ -46,7 +68,6 @@ export default function Auth() {
           return;
         }
         signup(formData);
-
         break;
     }
   };
