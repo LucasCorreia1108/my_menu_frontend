@@ -1,0 +1,125 @@
+﻿.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: min(1200px, calc(100% - 2rem));
+  margin: 2rem auto 0;
+  padding: 2rem 2rem 1.5rem;
+  border-radius: 2rem;
+  background: linear-gradient(74deg, rgba(139, 30, 63, 0.95), rgba(85, 107, 47, 0.95));
+  color: #FFFFFF;
+  box-shadow: 0 30px 80px rgba(45, 45, 45, 0.18);
+  box-sizing: border-box;
+}
+
+.footerTop {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.5fr) repeat(2, minmax(180px, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  align-items: start;
+}
+
+.brandBlock {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.brandBlock img {
+  width: min(15rem, 100%);
+  height: auto;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.08));
+}
+
+.brandBlock h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.brandBlock p {
+  margin: 0.6rem 0 0;
+  max-width: 420px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.linksBlock,
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.linksBlock h3,
+.infoBlock h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FAF7F2;
+}
+
+.link {
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.link:hover {
+  color: #ffd37a;
+  transform: translateX(2px);
+}
+
+.infoBlock p {
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.footerBottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 1rem;
+  display: flex;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+}
+
+@media screen and (max-width: 900px) {
+  .footer {
+    padding: 1.6rem 1.1rem 1.25rem;
+    border-radius: 1.5rem;
+  }
+
+  .footerTop {
+    grid-template-columns: 1fr;
+    gap: 1.3rem;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .brandBlock {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .brandBlock img {
+    width: min(11rem, 70vw);
+  }
+
+  .linksBlock,
+  .infoBlock {
+    align-items: center;
+    text-align: center;
+  }
+
+  .link {
+    width: fit-content;
+  }
+
+  .footerBottom {
+    text-align: center;
+    font-size: 0.9rem;
+  }
+}

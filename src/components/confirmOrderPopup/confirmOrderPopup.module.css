@@ -1,0 +1,16 @@
+﻿.popupContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: var(--card);
+  color: var(--text);
+  border-radius: 1.2rem;
+  box-shadow: var(--shadow);
+}
+
+.confirmBtns {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

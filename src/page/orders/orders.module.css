@@ -1,0 +1,61 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0 2rem;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+}
+
+.orderContainer {
+  background: var(--card);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.ordersContainer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.pickupStatus {
+  border-radius: 999px;
+  width: fit-content;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.pending {
+  background-color: #fdf2d8;
+  color: #7c5a00;
+}
+
+.completed {
+  background-color: #eaf7e8;
+  color: #2e5d12;
+}
+
+.canceled {
+  background-color: #fee2e2;
+  color: #9b1c1c;
+}
+
+.platesLinks {
+  color: var(--primary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 800px) {
+  .ordersContainer {
+    grid-template-columns: 1fr;
+  }
+}
