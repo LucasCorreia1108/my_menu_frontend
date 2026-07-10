@@ -38,7 +38,7 @@ const pages = createBrowserRouter([
       {
         path: "/orders",
         element: <Orders />
-      },
+      }
     ]
 
   },

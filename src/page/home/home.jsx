@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import platesServices from "../../services/plates";
 import Loading from "../loading/loading";
+import About from "../../page/about/about";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
+        <About/>
         <section className={styles.featuredSection}>
           <div className={styles.sectionTitle}>
             <h2>Destaques da casa</h2>
@@ -107,7 +108,7 @@ export default function Home() {
               Mais que um restaurante, uma experiência italiana. Aqui, cada prato conta
               uma história passada de geração em geração.
             </p>
-            <button onClick={() => navigate("/plates")}>Sobre Nós</button>
+            <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>Sobre Nós</button>
           </div>
         </section>
 

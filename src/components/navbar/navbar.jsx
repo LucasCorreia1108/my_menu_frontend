@@ -39,7 +39,7 @@ export default function Navbar() {
             <Link to={"/plates"} className={styles.navbarLink}>
               Cardápio
             </Link>
-            <Link to={"/"} className={styles.navbarLink}>
+            <Link  href="#about" underline="none" className={styles.navbarLink}>
               Sobre Nós
             </Link>
             <Link to={"/orders"} className={styles.navbarLink}>
