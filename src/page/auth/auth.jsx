@@ -4,6 +4,27 @@ import styles from "./auth.module.css";
 import AuthServices from "../../services/auth";
 import Loading from "../loading/loading";
 import { useNavigate } from "react-router-dom";
+import * as yup from "yup"; // 1. Importar o Yup
+
+// 2. Definir o Schema de Validação para o Cadastro
+const signupSchema = yup.object().shape({
+  fullname: yup
+    .string()
+    .required("O nome completo é obrigatório.")
+    .min(3, "O nome deve ter pelo menos 3 caracteres."),
+  email: yup
+    .string()
+    .email("Insira um e-mail válido.")
+    .required("O e-mail é obrigatório."),
+  password: yup
+    .string()
+    .required("A senha é obrigatória.")
+    .min(6, "A senha deve ter pelo menos 6 caracteres."),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "As senhas não coincidem.")
+    .required("A confirmação de senha é obrigatória."),
+});
 
 const getStoredAuth = () => {
   const savedAuth = localStorage.getItem("auth");
@@ -21,6 +42,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const [formType, setFormType] = useState("login");
   const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({}); // 3. Estado para guardar os erros de validação
   const { authLoading, login, signup } = AuthServices();
   const [authData, setAuthData] = useState(() => getStoredAuth());
 
@@ -38,10 +60,10 @@ export default function Auth() {
       navigate("/profile", { replace: true });
     }
   }, [authData, navigate]);
- 
 
   const handleChangeFormType = () => {
-    setFormData(null);
+    setFormData({});
+    setErrors({}); // Limpa os erros ao mudar de tela
     if (formType === "login") {
       setFormType("Signup");
     } else {
@@ -54,35 +76,44 @@ export default function Auth() {
       ...prev,
       [event.target.name]: event.target.value,
     }));
+    
+    if (errors[event.target.name]) {
+      setErrors((prev) => ({ ...prev, [event.target.name]: "" }));
+    }
   };
 
-  const handleSubmitForm = (event) => {
+
+  const handleSubmitForm = async (event) => {
     event.preventDefault();
+    setErrors({});
+
     switch (formType) {
       case "login":
         login(formData);
         break;
       case "Signup":
-        if (formData.password !== formData.confirmPassword) {
-          console.log("As senhas não coincidem.");
-          return;
+        try {
+          await signupSchema.validate(formData, { abortEarly: false });
+          signup(formData);
+        } catch (validationErrors) {
+          const formattedErrors = {};
+          validationErrors.inner.forEach((error) => {
+            formattedErrors[error.path] = error.message;
+          });
+          setErrors(formattedErrors);
         }
-        signup(formData);
         break;
     }
   };
 
   if (authLoading) {
-    return (
-      <Loading />
-    )
+    return <Loading />;
   }
-
 
   return (
     <div className={styles.authPageContainer}>
       {formType === "login" && (
-         <>
+        <>
           <h1>Login</h1>
           <button onClick={handleChangeFormType}>
             Você não tem uma conta? Clique aqui.
@@ -102,48 +133,60 @@ export default function Auth() {
               name="password"
               onChange={handleFormDataChange}
             />
-            <button style={{color: "#ffffff"}} type="submit">Entrar</button>
+            <button style={{ color: "#ffffff" }} type="submit">
+              Entrar
+            </button>
           </form>
-         </>
-      ) }
+        </>
+      )}
 
-        {formType === "Signup" && (
+      {formType === "Signup" && (
         <>
           <h1>Cadastre-se</h1>
-        <button onClick={handleChangeFormType}>Login</button>
-        <form onSubmit={handleSubmitForm}>
-          <TextField
-            label="Nome completo"
-            variant="outlined"
-            type="fullname"
-            name="fullname"
-            onChange={handleFormDataChange}
-          />
-          <TextField
-            label="Email"
-            variant="outlined"
-            type="email"
-            name="email"
-            onChange={handleFormDataChange}
-          />
-          <TextField
-            label="Senha"
-            variant="outlined"
-            type="password"
-            name="password"
-            onChange={handleFormDataChange}
-          />
-          <TextField
-            label="Confirmar senha"
-            variant="outlined"
-            type="password"
-            name="confirmPassword"
-            onChange={handleFormDataChange}
-          />
-          <Button style={{color: "#ffffff"}} type="submit">entrar</Button>
-        </form>
+          <button onClick={handleChangeFormType}>Login</button>
+          <form onSubmit={handleSubmitForm}>
+            <TextField
+              label="Nome completo"
+              variant="outlined"
+              type="text"
+              name="fullname"
+              onChange={handleFormDataChange}
+              error={!!errors.fullname} 
+              helperText={errors.fullname}
+            />
+            <TextField
+              label="Email"
+              variant="outlined"
+              type="email"
+              name="email"
+              onChange={handleFormDataChange}
+              error={!!errors.email}
+              helperText={errors.email}
+            />
+            <TextField
+              label="Senha"
+              variant="outlined"
+              type="password"
+              name="password"
+              onChange={handleFormDataChange}
+              error={!!errors.password}
+              helperText={errors.password}
+            />
+            <TextField
+              label="Confirmar senha"
+              variant="outlined"
+              type="password"
+              name="confirmPassword"
+              onChange={handleFormDataChange}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword}
+            />
+            <button variant="contained" style={{ color: "#ffffff" }} type="submit">
+              Cadastrar
+            </button>
+          </form>
         </>
-        )}
+      )}
     </div>
-  )
+  );
 }

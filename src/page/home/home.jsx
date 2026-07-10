@@ -10,7 +10,13 @@ import About from "../../page/about/about";
 export default function Home() {
   const navigate = useNavigate();
   const { getPlates, plateLoading, refetchPlates, platesList } = platesServices();
+const numbers = [1, 2, 3, 4];
 
+const result = numbers
+  .filter(num => num % 2 === 0)
+  .map(num => num * 2);
+
+console.log(result);
   useEffect(() => {
     if (refetchPlates && !platesList.length) {
       getPlates();
