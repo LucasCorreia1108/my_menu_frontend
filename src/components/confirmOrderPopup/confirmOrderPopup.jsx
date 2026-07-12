@@ -23,7 +23,6 @@ export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
                     pickupTime: formData?.pickupTime
                 }
 
-                // console.log(orderData)
                 onConfirm(orderData)
             }
         }

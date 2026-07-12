@@ -1,9 +1,11 @@
 import { createContext, useContext, useState } from "react";
+import { useSnackbar } from "./useSnackbarContext";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
+  const { showSuccess,  showError} = useSnackbar();
 
   const addToCart = (itemToAdd, quantity = 1) => {
     setCartItems((prevItems) => {
@@ -19,10 +21,12 @@ export function CartProvider({ children }) {
           : cardItem
       );
     });
+    showSuccess(`${itemToAdd.name} adicionado ao carrinho!`);''
   };
   const removeFromCart = (itemId) => {
     const cartItemsSanitized = cartItems.filter((item) => item._id !== itemId);
     setCartItems(cartItemsSanitized);
+    showError("Item removido do carrinho!");
   };
 
   const updateCartItems = (items) => {

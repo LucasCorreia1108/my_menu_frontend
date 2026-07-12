@@ -63,7 +63,6 @@ export default function Cart() {
           <div className={styles.itemListContainer}>
             {cartItems.map((item) => (
               <div className={styles.itemContainer} key={item._id}>
-                {console.log(item)}
                 <img src={item.imgUrl} />
                 <div className={styles.itemContent}>
                   <h2>{item.name}</h2>
