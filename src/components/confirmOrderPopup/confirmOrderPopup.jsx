@@ -27,7 +27,7 @@ export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
             }
         }
     }
-    console.log(formData?.pickupTime)
+    
 
     const handleFormDataChange = (e) => {
         setFormData({

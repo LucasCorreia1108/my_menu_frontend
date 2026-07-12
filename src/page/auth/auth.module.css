@@ -22,3 +22,10 @@ form select {
   min-width: 260px;
   border-color: rgba(85, 107, 47, 0.18);
 }
+
+@media screen and (max-width: 600px) {
+  .authPageContainer,
+form {
+    padding: 1.5rem 1rem 2rem;
+  }
+}
