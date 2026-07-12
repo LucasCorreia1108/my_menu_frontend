@@ -9,6 +9,7 @@ import Auth from './page/auth/auth.jsx';
 import Cart from './page/cart/cart.jsx';
 import Plates from './page/plates/plates.jsx';
 import Orders from './page/orders/orders.jsx';
+import RequireAuth from './components/requireAuth/requireAuth.jsx';
 
 const pages = createBrowserRouter([
   {
@@ -21,7 +22,7 @@ const pages = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <Profile />
+        element: <RequireAuth><Profile /></RequireAuth>
       },
       {
         path: "/auth",
@@ -37,7 +38,7 @@ const pages = createBrowserRouter([
       },
       {
         path: "/orders",
-        element: <Orders />
+        element: <RequireAuth><Orders /></RequireAuth>
       }
     ]
 

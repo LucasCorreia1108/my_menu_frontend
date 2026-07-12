@@ -4,12 +4,12 @@ import { CiCircleMinus } from "react-icons/ci";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ConfirmOrderPopup from "../../components/confirmOrderPopup/confirmOrderPopup";
-import orderServices from "../../services/order";
+import useOrderServices from "../../services/order";
 
 export default function Cart() {
   const { cartItems, updateCartItems, removeFromCart } = useCartContext();
   const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
-  const { sendOrder } = orderServices();
+  const { sendOrder } = useOrderServices();
   const navigate = useNavigate();
 
   if (cartItems.length === 0) {
@@ -40,13 +40,14 @@ export default function Cart() {
   };
 
   const handleConfirmOrder = (orderData) => {
-   orderData.items = cartItems.map((item) => {
-    return {
-        plateId: item._id,
-        quantity: item.quantity
-    }
-   });
-   sendOrder(orderData);
+   const sanitizedOrder = {
+    ...orderData,
+    items: cartItems.map((item) => ({
+      plateId: item._id,
+      quantity: Math.min(Math.max(Number(item.quantity) || 1, 1), 99),
+    })),
+   };
+   sendOrder(sanitizedOrder);
    setConfirmPopupOpen(!confirmPopupOpen);
   };
 
@@ -63,7 +64,6 @@ export default function Cart() {
           <div className={styles.itemListContainer}>
             {cartItems.map((item) => (
               <div className={styles.itemContainer} key={item._id}>
-                {console.log(item)}
                 <img src={item.imgUrl} />
                 <div className={styles.itemContent}>
                   <h2>{item.name}</h2>

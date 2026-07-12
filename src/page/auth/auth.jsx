@@ -1,49 +1,55 @@
 import { useEffect, useState } from "react";
 import { TextField, Button } from "@mui/material";
 import styles from "./auth.module.css";
-import AuthServices from "../../services/auth";
+import useAuthServices from "../../services/auth";
 import Loading from "../loading/loading";
 import { useNavigate } from "react-router-dom";
-import * as yup from "yup"; // 1. Importar o Yup
+import * as yup from "yup";
+import { getStoredAuth } from "../../utils/authStorage";
 
-// 2. Definir o Schema de Validação para o Cadastro
 const signupSchema = yup.object().shape({
   fullname: yup
     .string()
+    .trim()
     .required("O nome completo é obrigatório.")
-    .min(3, "O nome deve ter pelo menos 3 caracteres."),
+    .min(3, "O nome deve ter pelo menos 3 caracteres.")
+    .max(100, "O nome deve ter no máximo 100 caracteres."),
   email: yup
     .string()
+    .trim()
     .email("Insira um e-mail válido.")
-    .required("O e-mail é obrigatório."),
+    .required("O e-mail é obrigatório.")
+    .max(254, "O e-mail deve ter no máximo 254 caracteres."),
   password: yup
     .string()
     .required("A senha é obrigatória.")
-    .min(6, "A senha deve ter pelo menos 6 caracteres."),
+    .min(8, "A senha deve ter pelo menos 8 caracteres.")
+    .max(128, "A senha deve ter no máximo 128 caracteres."),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref("password"), null], "As senhas não coincidem.")
     .required("A confirmação de senha é obrigatória."),
 });
 
-const getStoredAuth = () => {
-  const savedAuth = localStorage.getItem("auth");
-
-  if (!savedAuth) return null;
-
-  try {
-    return JSON.parse(savedAuth);
-  } catch {
-    return null;
-  }
-};
+const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .trim()
+    .email("Insira um e-mail válido.")
+    .required("O e-mail é obrigatório.")
+    .max(254, "O e-mail deve ter no máximo 254 caracteres."),
+  password: yup
+    .string()
+    .required("A senha é obrigatória.")
+    .max(128, "A senha deve ter no máximo 128 caracteres."),
+});
 
 export default function Auth() {
   const navigate = useNavigate();
   const [formType, setFormType] = useState("login");
   const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({}); // 3. Estado para guardar os erros de validação
-  const { authLoading, login, signup } = AuthServices();
+  const [errors, setErrors] = useState({});
+  const { authLoading, login, signup } = useAuthServices();
   const [authData, setAuthData] = useState(() => getStoredAuth());
 
   useEffect(() => {
@@ -63,7 +69,7 @@ export default function Auth() {
 
   const handleChangeFormType = () => {
     setFormData({});
-    setErrors({}); // Limpa os erros ao mudar de tela
+    setErrors({});
     if (formType === "login") {
       setFormType("Signup");
     } else {
@@ -89,12 +95,27 @@ export default function Auth() {
 
     switch (formType) {
       case "login":
-        login(formData);
+        try {
+          const validLoginData = await loginSchema.validate(formData, {
+            abortEarly: false,
+            stripUnknown: true,
+          });
+          login(validLoginData);
+        } catch (validationErrors) {
+          const formattedErrors = {};
+          validationErrors.inner.forEach((error) => {
+            formattedErrors[error.path] = error.message;
+          });
+          setErrors(formattedErrors);
+        }
         break;
       case "Signup":
         try {
-          await signupSchema.validate(formData, { abortEarly: false });
-          signup(formData);
+          const validSignupData = await signupSchema.validate(formData, {
+            abortEarly: false,
+            stripUnknown: true,
+          });
+          signup(validSignupData);
         } catch (validationErrors) {
           const formattedErrors = {};
           validationErrors.inner.forEach((error) => {
@@ -125,6 +146,8 @@ export default function Auth() {
               type="email"
               name="email"
               onChange={handleFormDataChange}
+              error={!!errors.email}
+              helperText={errors.email}
             />
             <TextField
               label="Password"
@@ -132,6 +155,8 @@ export default function Auth() {
               type="password"
               name="password"
               onChange={handleFormDataChange}
+              error={!!errors.password}
+              helperText={errors.password}
             />
             <button style={{ color: "#ffffff" }} type="submit">
               Entrar

@@ -1,25 +1,23 @@
 import { useState } from "react";
+import { getApiUrl } from "../utils/api";
+import { clearStoredAuth, saveStoredAuth } from "../utils/authStorage";
 
-export default function authServices() {
+export default function useAuthServices() {
     const [authLoading, setAuthLoading] = useState(false);
-    const [userData, setUserData] = useState(null);
-    
-    const url = `${import.meta.env.VITE_API_URL}`;
 
     const login = (formData) => {
         setAuthLoading(true);
-        fetch(`${url}/auth/login`, {
+        fetch(getApiUrl("/auth/login"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
             },
             body: JSON.stringify(formData),
         })
         .then((response) => response.json())
         .then((result) => {
              if (result.success && result.body.token) {
-                localStorage.setItem("auth", JSON.stringify({token: result.body.token, user: result.body.user}));
+                saveStoredAuth({token: result.body.token, user: result.body.user});
                 window.dispatchEvent(new Event("authChanged"));
             }
         }).catch((error) => {
@@ -30,23 +28,26 @@ export default function authServices() {
     }
 
     const logout = async () => {
-        localStorage.removeItem("auth");
+        clearStoredAuth();
         window.dispatchEvent(new Event("authChanged"));
     }
 
     const signup = async (formData) => {
-         fetch(`${url}/auth/signup`, {
+        setAuthLoading(true);
+        const signupData = { ...formData };
+        delete signupData.confirmPassword;
+
+         fetch(getApiUrl("/auth/signup"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(signupData),
         })
         .then((response) => response.json())
         .then((result) => {
             if (result.success && result.body.token) {
-                localStorage.setItem("auth", JSON.stringify({token: result.body.token, user: result.body.user}));
+                saveStoredAuth({token: result.body.token, user: result.body.user});
                 window.dispatchEvent(new Event("authChanged"));
             }
         }).catch((error) => {

@@ -3,25 +3,18 @@ import { FaInstagram, FaFacebookSquare, FaWhatsapp, FaMapMarkerAlt, FaPizzaSlice
 import { GiNoodles } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import platesServices from "../../services/plates";
+import usePlatesServices from "../../services/plates";
 import Loading from "../loading/loading";
 import About from "../../page/about/about";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { getPlates, plateLoading, refetchPlates, platesList } = platesServices();
-const numbers = [1, 2, 3, 4];
-
-const result = numbers
-  .filter(num => num % 2 === 0)
-  .map(num => num * 2);
-
-console.log(result);
+  const { getPlates, plateLoading, refetchPlates, platesList } = usePlatesServices();
   useEffect(() => {
     if (refetchPlates && !platesList.length) {
       getPlates();
     }
-  }, [refetchPlates, platesList.length]);
+  }, [refetchPlates, platesList.length, getPlates]);
 
   const featuredPlates = platesList.slice(0, 3);
 

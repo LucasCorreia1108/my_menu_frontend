@@ -1,27 +1,18 @@
 import { useEffect } from "react";
 import styles from "./orders.module.css";
-import orderServices from "../../services/order";
+import useOrderServices from "../../services/order";
 import { LuTimer, LuBan } from "react-icons/lu";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../loading/loading";
+import { getStoredAuth } from "../../utils/authStorage";
 
 export default function Orders() {
   const { getUserOrders, orderLoading, refetchOrders, ordersList } =
-    orderServices();
+    useOrderServices();
   const navigate = useNavigate();
 
-  const authData = (() => {
-    const savedAuth = localStorage.getItem("auth");
-
-    if (!savedAuth) return null;
-
-    try {
-      return JSON.parse(savedAuth);
-    } catch {
-      return null;
-    }
-  })();
+  const authData = getStoredAuth();
 
   useEffect(() => {
     if (!authData?.user?._id) {
@@ -32,7 +23,7 @@ export default function Orders() {
     if (refetchOrders) {
       getUserOrders(authData.user._id);
     }
-  }, [authData, refetchOrders, navigate]);
+  }, [authData, refetchOrders, navigate, getUserOrders]);
 
   if (orderLoading) {
     return <Loading />;

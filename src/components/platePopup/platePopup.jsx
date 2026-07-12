@@ -9,7 +9,7 @@ export default function PlatePopup({ plateData, onClose, onAddToCart }) {
     const handleQuantity = (mode) => {
         setQuantity((current) => {
             if (mode === 'less' && current > 1) return current - 1
-            if (mode === 'more') return current + 1
+            if (mode === 'more' && current < 99) return current + 1
             return current
         })
     }

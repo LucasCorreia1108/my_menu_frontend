@@ -3,10 +3,11 @@ import styles from './confirmOrderPopup.module.css'
 import { useState } from "react"
 import { TextField } from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import { getStoredAuth } from "../../utils/authStorage"
 
 export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
-    const [formData, setFormData] = useState(null)
-    const authData = JSON.parse(localStorage.getItem('auth'))
+    const [formData, setFormData] = useState({})
+    const authData = getStoredAuth()
     const navigate = useNavigate()
 
     const handleConfirm = (e) => {
@@ -15,7 +16,7 @@ export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
         if(!authData?.user?._id) {
             return navigate('/auth')
         } else {
-            if(!formData?.pickupTime) {
+            if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(formData?.pickupTime || "")) {
                 return 
             } else {
                 const orderData = {
@@ -23,7 +24,6 @@ export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
                     pickupTime: formData?.pickupTime
                 }
 
-                // console.log(orderData)
                 onConfirm(orderData)
             }
         }

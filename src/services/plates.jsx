@@ -1,20 +1,18 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { getApiUrl } from "../utils/api";
 
-export default function platesServices() {
+export default function usePlatesServices() {
     const [plateLoading, setPlateLoading] = useState(false)
     const [refetchPlates, setRefetchPlates] = useState(true)
     const [platesList, setPlatesList] = useState([])
 
-    const url = `${import.meta.env.VITE_API_URL}/plates`
-
-    const getPlates = () => {
+    const getPlates = useCallback(() => {
         setPlateLoading(true)
 
-        fetch(`${url}/available`, {
+        fetch(getApiUrl("/plates/available"), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
             },
         })
         .then((response) => response.json())
@@ -22,17 +20,17 @@ export default function platesServices() {
             if(result.success) {
                 setPlatesList(result.body)
             } else {
-                console.log("Failed to fetch plates:", result);
+                setPlatesList([])
             }
         })
-        .catch((error) => {
-            console.log(error)
+        .catch(() => {
+            setPlatesList([])
         })
         .finally(() => {
             setPlateLoading(false)
             setRefetchPlates(false)
         })
-    }
+    }, [])
 
 
     return {

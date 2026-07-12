@@ -1,65 +1,57 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useCartContext } from "../contexts/useCartContext";
+import { getApiUrl, getAuthenticatedHeaders } from "../utils/api";
 
-export default function orderServices() {
+export default function useOrderServices() {
     const [orderLoading, setOrderLoading] = useState(false)
     const [refetchOrders, setRefetchOrders] = useState(true)
     const [ordersList, setOrdersList] = useState([])
     const { clearCart } = useCartContext();
    
 
-    const url = `${import.meta.env.VITE_API_URL}/orders`;
-
-    const getUserOrders = (userId) => {
+    const getUserOrders = useCallback((userId) => {
         setOrderLoading(true)
         
-        fetch(`${url}/userorders/${userId}`, {
+        fetch(getApiUrl(`/orders/userorders/${encodeURIComponent(userId)}`), {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
+            headers: getAuthenticatedHeaders(),
         })
         .then((response) => response.json())
         .then((result) => {
             if(result.success) {
                 setOrdersList(result.body)
             } else {
-                console.log("Failed to fetch orders:", result);
+                setOrdersList([])
             }
         })
-        .catch((error) => {
-            console.log(error)
+        .catch(() => {
+            setOrdersList([])
         })
         .finally(() => {
             setOrderLoading(false)
             setRefetchOrders(false)
         })
-    }
+    }, [])
    
-    const sendOrder = (orderData) => {
+    const sendOrder = useCallback((orderData) => {
         setOrderLoading(true)
         
-        fetch(`${url}`, {
+        fetch(getApiUrl("/orders"), {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
+            headers: getAuthenticatedHeaders(),
             body: JSON.stringify(orderData)
         })
         .then((response) => response.json())
         .then((result) => {
-           console.log(result)
-           clearCart()
+           if (result.success) {
+               clearCart()
+           }
         })
-        .catch((error) => {
-            console.log(error)
-        })
+        .catch(() => {})
         .finally(() => {
             setOrderLoading(false)
         })
-    }
+    }, [clearCart])
 
 
     return {
