@@ -27,6 +27,7 @@ export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
             }
         }
     }
+    console.log(formData?.pickupTime)
 
     const handleFormDataChange = (e) => {
         setFormData({
@@ -44,6 +45,7 @@ export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
                     <TextField
                     onChange={handleFormDataChange}
                     required
+                    value={formData?.pickupTime ?? null}
                     type="time"
                     name='pickupTime'
                     />

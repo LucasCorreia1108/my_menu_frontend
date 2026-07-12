@@ -44,7 +44,7 @@ export default function PlatePopup({ plateData, onClose, onAddToCart }) {
                       <strong>R$ {totalPrice.toFixed(2)}</strong>
                     </div>
                     <div className={styles.buttonRow}>
-                      <button onClick={handleAdd}>Add to cart</button>
+                      <button onClick={handleAdd}>Adicionar ao carrinho</button>
                     </div>
                 </div>
             </div>

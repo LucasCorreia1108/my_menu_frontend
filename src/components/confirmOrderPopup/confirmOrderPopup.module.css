@@ -14,3 +14,7 @@
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+
+.formContainer {
+  width: 100%;
+}
