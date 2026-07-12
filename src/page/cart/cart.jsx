@@ -15,8 +15,8 @@ export default function Cart() {
   if (cartItems.length === 0) {
     return (
       <>
-        <p>Your cart is empty.</p>
-        <button onClick={() => navigate("/plates")}>See our specialities !</button>
+        <p className={styles.emptyCartMessage}>Seu carrinho está vazio.</p>
+        <button onClick={() => navigate("/plates")}>Ver nossas especialidades !</button>
       </>
     );
   }
@@ -58,7 +58,7 @@ export default function Cart() {
   return (
     <>
       <div className={styles.pageContainer}>
-        <h1>Your Items:</h1>
+        <h1>Seus itens:</h1>
         <section>
           <div className={styles.itemListContainer}>
             {cartItems.map((item) => (
@@ -69,7 +69,7 @@ export default function Cart() {
                   <p>[{String(item.ingredients)}]</p>
                   <p>{item.description}</p>
                   <div className={styles.portionsContainer}>
-                    <p>portions:</p>
+                    <p>porções:</p>
                     <p>{item?.quantity}</p>
                     <div className={styles.portionsButtons}>
                       <button
@@ -85,7 +85,7 @@ export default function Cart() {
                     </div>
                   </div>
                   <button onClick={() => removeFromCart(item._id)}>
-                    <CiCircleMinus /> Remove item
+                    <CiCircleMinus /> Remover item
                   </button>
                 </div>
               </div>
@@ -102,7 +102,7 @@ export default function Cart() {
             className={styles.confirmButton}
             onClick={() => handleOpenPopup()}
           >
-            Confirm your order
+            Confirmar pedido
           </button>
         </div>
       </div>

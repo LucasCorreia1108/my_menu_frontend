@@ -172,6 +172,10 @@
   font-size: 1.5rem;
 }
 
+.emptyCartMessage{
+  padding: 1rem 0.5rem;
+  font-size: 1.2rem;
+}
 @media screen and (max-width: 800px) {
   .itemContainer {
     grid-template-columns: 1fr;
