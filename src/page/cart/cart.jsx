@@ -9,7 +9,7 @@ import orderServices from "../../services/order";
 export default function Cart() {
   const { cartItems, updateCartItems, removeFromCart } = useCartContext();
   const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
-  const { sendOrder } = orderServices();
+  const { sendOrder, orderError } = orderServices();
   const navigate = useNavigate();
 
   if (cartItems.length === 0) {
@@ -39,15 +39,19 @@ export default function Cart() {
     setConfirmPopupOpen(!confirmPopupOpen);
   };
 
-  const handleConfirmOrder = (orderData) => {
+  const handleConfirmOrder = async (orderData) => {
    orderData.items = cartItems.map((item) => {
     return {
         plateId: item._id,
         quantity: item.quantity
     }
    });
-   sendOrder(orderData);
-   setConfirmPopupOpen(!confirmPopupOpen);
+   try {
+     await sendOrder(orderData);
+     setConfirmPopupOpen(false);
+   } catch {
+     // Keep the popup open so the error message stays visible to the user.
+   }
   };
 
   const totalValue = cartItems.reduce((sum, item) => {
@@ -99,6 +103,11 @@ export default function Cart() {
             <span>Total</span>
             <strong>R$ {totalValue.toFixed(2)}</strong>
           </div>
+          {orderError && (
+            <p role="alert" className={styles.orderError}>
+              {orderError}
+            </p>
+          )}
           <button
             className={styles.confirmButton}
             onClick={() => handleOpenPopup()}

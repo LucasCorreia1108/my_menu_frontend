@@ -177,3 +177,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+.orderError {
+  color: #b71c1c;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+}

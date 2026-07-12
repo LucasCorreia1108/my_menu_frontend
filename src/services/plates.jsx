@@ -4,34 +4,41 @@ export default function platesServices() {
     const [plateLoading, setPlateLoading] = useState(false)
     const [refetchPlates, setRefetchPlates] = useState(true)
     const [platesList, setPlatesList] = useState([])
+    const [plateError, setPlateError] = useState(null)
 
     const url = `${import.meta.env.VITE_API_URL}/plates`
 
-    const getPlates = () => {
+    const getPlates = async () => {
         setPlateLoading(true)
+        setPlateError(null)
 
-        fetch(`${url}/available`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-        })
-        .then((response) => response.json())
-        .then((result) => {
-            if(result.success) {
+        try {
+            const response = await fetch(`${url}/available`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+            })
+
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`)
+            }
+
+            const result = await response.json()
+
+            if (result.success) {
                 setPlatesList(result.body)
             } else {
-                console.log("Failed to fetch plates:", result);
+                throw new Error(result.message || "Failed to fetch plates.")
             }
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-        .finally(() => {
+        } catch (error) {
+            console.error("Failed to fetch plates:", error)
+            setPlateError(error.message || "Failed to fetch plates.")
+        } finally {
             setPlateLoading(false)
             setRefetchPlates(false)
-        })
+        }
     }
 
 
@@ -39,6 +46,7 @@ export default function platesServices() {
        getPlates,
        plateLoading,
        refetchPlates,
-       platesList
+       platesList,
+       plateError
     }
 }

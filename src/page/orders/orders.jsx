@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Loading from "../loading/loading";
 
 export default function Orders() {
-  const { getUserOrders, orderLoading, refetchOrders, ordersList } =
+  const { getUserOrders, orderLoading, refetchOrders, ordersList, orderError } =
     orderServices();
   const navigate = useNavigate();
 
@@ -36,6 +36,19 @@ export default function Orders() {
 
   if (orderLoading) {
     return <Loading />;
+  }
+
+  if (orderError) {
+    return (
+      <div role="alert" className={styles.ordersError}>
+        <p>{orderError}</p>
+        {authData?.user?._id && (
+          <button onClick={() => getUserOrders(authData.user._id)}>
+            Tentar novamente
+          </button>
+        )}
+      </div>
+    );
   }
 
   return (

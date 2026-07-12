@@ -43,7 +43,7 @@ export default function Auth() {
   const [formType, setFormType] = useState("login");
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({}); // 3. Estado para guardar os erros de validação
-  const { authLoading, login, signup } = AuthServices();
+  const { authLoading, authError, login, signup } = AuthServices();
   const [authData, setAuthData] = useState(() => getStoredAuth());
 
   useEffect(() => {
@@ -112,6 +112,11 @@ export default function Auth() {
 
   return (
     <div className={styles.authPageContainer}>
+      {authError && (
+        <p role="alert" className={styles.authError}>
+          {authError}
+        </p>
+      )}
       {formType === "login" && (
         <>
           <h1>Login</h1>

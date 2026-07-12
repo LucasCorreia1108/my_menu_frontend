@@ -8,7 +8,7 @@ import PlatePopup from "../../components/platePopup/platePopup.jsx";
 import { useCartContext } from "../../contexts/useCartContext";
 
 export default function Plates() {
-  const { getPlates, plateLoading, refetchPlates, platesList } =
+  const { getPlates, plateLoading, refetchPlates, platesList, plateError } =
     platesServices();
   const [plateSelected, setPlateSelected] = useState(null);
   const { addToCart } = useCartContext();
@@ -21,6 +21,15 @@ export default function Plates() {
 
   if (plateLoading) {
     return <Loading />;
+  }
+
+  if (plateError) {
+    return (
+      <div role="alert" className={styles.plateError}>
+        <p>{plateError}</p>
+        <button onClick={() => getPlates()}>Tentar novamente</button>
+      </div>
+    );
   }
 
   const handlePlateSected = (plate) => {

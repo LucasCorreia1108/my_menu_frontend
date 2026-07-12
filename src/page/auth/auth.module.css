@@ -22,3 +22,16 @@ form select {
   min-width: 260px;
   border-color: rgba(85, 107, 47, 0.18);
 }
+
+.authError {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(211, 47, 47, 0.1);
+  border: 1px solid rgba(211, 47, 47, 0.4);
+  color: #b71c1c;
+  text-align: center;
+  font-weight: 600;
+}
