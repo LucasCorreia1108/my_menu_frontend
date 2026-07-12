@@ -3,25 +3,19 @@ import { FaInstagram, FaFacebookSquare, FaWhatsapp, FaMapMarkerAlt, FaPizzaSlice
 import { GiNoodles } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import platesServices from "../../services/plates";
+import usePlatesServices from "../../services/plates";
 import Loading from "../loading/loading";
 import About from "../../page/about/about";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { getPlates, plateLoading, refetchPlates, platesList } = platesServices();
-const numbers = [1, 2, 3, 4];
-
-const result = numbers
-  .filter(num => num % 2 === 0)
-  .map(num => num * 2);
-
-console.log(result);
+  const { getPlates, plateLoading, refetchPlates, platesList } = usePlatesServices();
   useEffect(() => {
     if (refetchPlates && !platesList.length) {
       getPlates();
     }
-  }, [refetchPlates, platesList.length]);
+  }, [getPlates, refetchPlates, platesList.length]);
 
   const featuredPlates = platesList.slice(0, 3);
 
@@ -99,7 +93,7 @@ console.log(result);
                 <div className={styles.productCardContent}>
                   <h3>{plate.name}</h3>
                   <p>{plate.description}</p>
-                  <span>R$ {Number(plate.price || 0).toFixed(2)}</span>
+                  <span>{formatCurrency(plate.price)}</span>
                 </div>
               </article>
             ))}

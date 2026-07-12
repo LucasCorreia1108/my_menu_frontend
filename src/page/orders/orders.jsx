@@ -1,27 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "./orders.module.css";
-import orderServices from "../../services/order";
+import useOrderServices from "../../services/order";
 import { LuTimer, LuBan } from "react-icons/lu";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../loading/loading";
+import { getStoredAuth, subscribeToAuthChanges } from "../../utils/authStorage";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 export default function Orders() {
   const { getUserOrders, orderLoading, refetchOrders, ordersList } =
-    orderServices();
+    useOrderServices();
   const navigate = useNavigate();
+  const [authData, setAuthData] = useState(() => getStoredAuth());
 
-  const authData = (() => {
-    const savedAuth = localStorage.getItem("auth");
+  useEffect(() => {
+    const updateAuthData = () => setAuthData(getStoredAuth());
 
-    if (!savedAuth) return null;
-
-    try {
-      return JSON.parse(savedAuth);
-    } catch {
-      return null;
-    }
-  })();
+    return subscribeToAuthChanges(updateAuthData);
+  }, []);
 
   useEffect(() => {
     if (!authData?.user?._id) {
@@ -32,7 +29,7 @@ export default function Orders() {
     if (refetchOrders) {
       getUserOrders(authData.user._id);
     }
-  }, [authData, refetchOrders, navigate]);
+  }, [authData, getUserOrders, refetchOrders, navigate]);
 
   if (orderLoading) {
     return <Loading />;
@@ -69,7 +66,7 @@ export default function Orders() {
                   <div key={item._id}>
                     <h4>{item?.itemDetails[0]?.name}</h4>
                     <p>Quantidade: {item?.quantity}</p>
-                    <p>Preço: R${item?.itemDetails[0]?.price?.toFixed(2)}</p>
+                    <p>Preço: {formatCurrency(item?.itemDetails[0]?.price)}</p>
                   </div>
                 ))}
               </div>

@@ -1,13 +1,8 @@
 import styles from "./footer.module.css";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { handleNavigate } from "../../utils/handleNavigate";
+import { Link } from "react-router-dom";
+import { scrollToTop } from "../../utils/scrollToTop";
 
 export default function Footer() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
- 
-
   return (
     <footer className={styles.footer}>
       <div className={styles.footerTop}>
@@ -21,9 +16,9 @@ export default function Footer() {
 
         <div className={styles.linksBlock}>
           <h3>Explorar</h3>
-          <Link className={styles.link} to="/" onClick={() => handleNavigate("/")}>Home</Link>
-          <Link className={styles.link} to="/plates" onClick={() => handleNavigate("/plates")}>Cardápio</Link>
-          <Link className={styles.link} to="/profile" onClick={() => handleNavigate("/profile")}>Perfil</Link>
+          <Link className={styles.link} to="/" onClick={scrollToTop}>Home</Link>
+          <Link className={styles.link} to="/plates" onClick={scrollToTop}>Cardápio</Link>
+          <Link className={styles.link} to="/profile" onClick={scrollToTop}>Perfil</Link>
         </div>
 
         <div className={styles.infoBlock}>

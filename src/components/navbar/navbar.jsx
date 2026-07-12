@@ -1,14 +1,15 @@
 import styles from "./navbar.module.css";
-import { LuShoppingCart, LuUser, LuMenu } from "react-icons/lu";
+import { LuShoppingCart, LuMenu } from "react-icons/lu";
 import { Drawer } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCartContext } from "../../contexts/useCartContext";
+import { useCartContext } from "../../contexts/cartContext";
+import { getStoredAuth, subscribeToAuthChanges } from "../../utils/authStorage";
 
 export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(
-    Boolean(JSON.parse(localStorage.getItem("auth"))?.token)
+    Boolean(getStoredAuth()?.token)
   );
   const { cartItems } = useCartContext();
   const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
@@ -17,10 +18,10 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleAuthChange = () => {
-      setIsLoggedIn(Boolean(JSON.parse(localStorage.getItem("auth"))?.token));
+      setIsLoggedIn(Boolean(getStoredAuth()?.token));
     };
-    window.addEventListener("authChanged", handleAuthChange);
-    return () => window.removeEventListener("authChanged", handleAuthChange);
+
+    return subscribeToAuthChanges(handleAuthChange);
   }, []);
 
   const handleOpenMenu = () => {

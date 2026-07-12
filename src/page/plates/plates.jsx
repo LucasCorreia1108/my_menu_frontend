@@ -1,15 +1,14 @@
-import platesServices from "../../services/plates";
+import usePlatesServices from "../../services/plates";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Loading from "../loading/loading";
 import PlateCard from "../../components/plateCard/plateCard";
 import styles from "./plates.module.css";
 import PlatePopup from "../../components/platePopup/platePopup.jsx";
-import { useCartContext } from "../../contexts/useCartContext";
+import { useCartContext } from "../../contexts/cartContext";
 
 export default function Plates() {
   const { getPlates, plateLoading, refetchPlates, platesList } =
-    platesServices();
+    usePlatesServices();
   const [plateSelected, setPlateSelected] = useState(null);
   const { addToCart } = useCartContext();
 
@@ -17,7 +16,7 @@ export default function Plates() {
     if (refetchPlates && !platesList.length) {
       getPlates();
     }
-  }, [refetchPlates]);
+  }, [getPlates, refetchPlates, platesList.length]);
 
   if (plateLoading) {
     return <Loading />;

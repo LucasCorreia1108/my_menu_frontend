@@ -1,15 +1,17 @@
-import { useCartContext } from "../../contexts/useCartContext";
+import { useCartContext } from "../../contexts/cartContext";
 import styles from "./cart.module.css";
 import { CiCircleMinus } from "react-icons/ci";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ConfirmOrderPopup from "../../components/confirmOrderPopup/confirmOrderPopup";
-import orderServices from "../../services/order";
+import useOrderServices from "../../services/order";
+import { adjustQuantity } from "../../utils/quantity";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 export default function Cart() {
   const { cartItems, updateCartItems, removeFromCart } = useCartContext();
   const [confirmPopupOpen, setConfirmPopupOpen] = useState(false);
-  const { sendOrder } = orderServices();
+  const { sendOrder } = useOrderServices();
   const navigate = useNavigate();
 
   if (cartItems.length === 0) {
@@ -22,17 +24,12 @@ export default function Cart() {
   }
 
   const handleChangeItemQty = (mode, itemId) => {
-    const upadatedCartItems = cartItems.map((item) => {
-      if (item._id === itemId) {
-        if (mode === "less" && item.quantity > 1) {
-          item.quantity -= 1;
-        } else if (mode === "more") {
-          item.quantity += 1;
-        }
-      }
-      return item;
-    });
-    updateCartItems(upadatedCartItems);
+    const updatedCartItems = cartItems.map((item) =>
+      item._id === itemId
+        ? { ...item, quantity: adjustQuantity(item.quantity, mode) }
+        : item
+    );
+    updateCartItems(updatedCartItems);
   };
 
   const handleOpenPopup = () => {
@@ -97,7 +94,7 @@ export default function Cart() {
         <div className={styles.cartSummary}>
           <div className={styles.cartTotal}>
             <span>Total</span>
-            <strong>R$ {totalValue.toFixed(2)}</strong>
+            <strong>{formatCurrency(totalValue)}</strong>
           </div>
           <button
             className={styles.confirmButton}

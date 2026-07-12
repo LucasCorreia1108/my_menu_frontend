@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField } from "@mui/material";
 import styles from "./auth.module.css";
-import AuthServices from "../../services/auth";
+import useAuthServices from "../../services/auth";
 import Loading from "../loading/loading";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup"; // 1. Importar o Yup
+import { getStoredAuth, subscribeToAuthChanges } from "../../utils/authStorage";
 
 // 2. Definir o Schema de Validação para o Cadastro
 const signupSchema = yup.object().shape({
@@ -26,33 +27,19 @@ const signupSchema = yup.object().shape({
     .required("A confirmação de senha é obrigatória."),
 });
 
-const getStoredAuth = () => {
-  const savedAuth = localStorage.getItem("auth");
-
-  if (!savedAuth) return null;
-
-  try {
-    return JSON.parse(savedAuth);
-  } catch {
-    return null;
-  }
-};
-
 export default function Auth() {
   const navigate = useNavigate();
   const [formType, setFormType] = useState("login");
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({}); // 3. Estado para guardar os erros de validação
-  const { authLoading, login, signup } = AuthServices();
+  const { authLoading, login, signup } = useAuthServices();
   const [authData, setAuthData] = useState(() => getStoredAuth());
 
   useEffect(() => {
     const updateAuthData = () => setAuthData(getStoredAuth());
 
     updateAuthData();
-    window.addEventListener("authChanged", updateAuthData);
-
-    return () => window.removeEventListener("authChanged", updateAuthData);
+    return subscribeToAuthChanges(updateAuthData);
   }, []);
 
   useEffect(() => {

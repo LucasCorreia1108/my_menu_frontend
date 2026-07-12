@@ -3,10 +3,11 @@ import styles from './confirmOrderPopup.module.css'
 import { useState } from "react"
 import { TextField } from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import { getStoredAuth } from "../../utils/authStorage"
 
 export default function ConfirmOrderPopup({ open, onClose, onConfirm }) {
     const [formData, setFormData] = useState(null)
-    const authData = JSON.parse(localStorage.getItem('auth'))
+    const authData = getStoredAuth()
     const navigate = useNavigate()
 
     const handleConfirm = (e) => {

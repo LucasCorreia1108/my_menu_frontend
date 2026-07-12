@@ -1,4 +1,5 @@
 import styles from "./plateCard.module.css";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 export default function PlateCard({ plateData }) {
   return (
@@ -10,7 +11,7 @@ export default function PlateCard({ plateData }) {
         <h4>{plateData.name}</h4>
         <p>{plateData.description}</p>
         <div className={styles.cardFooter}>
-          <span className={styles.price}>R$ {Number(plateData.price).toFixed(2)}</span>
+          <span className={styles.price}>{formatCurrency(plateData.price)}</span>
         </div>
       </div>
     </div>

@@ -1,17 +1,15 @@
 import { Dialog } from "@mui/material"
 import { useState } from "react"
 import styles from './platePopup.module.css'
+import { adjustQuantity } from "../../utils/quantity"
+import { formatCurrency } from "../../utils/formatCurrency"
 
 export default function PlatePopup({ plateData, onClose, onAddToCart }) {
     const [quantity, setQuantity] = useState(1)
     const totalPrice = (Number(plateData.price) || 0) * quantity
 
     const handleQuantity = (mode) => {
-        setQuantity((current) => {
-            if (mode === 'less' && current > 1) return current - 1
-            if (mode === 'more') return current + 1
-            return current
-        })
+        setQuantity((current) => adjustQuantity(current, mode))
     }
 
     const handleAdd = () => {
@@ -29,7 +27,7 @@ export default function PlatePopup({ plateData, onClose, onAddToCart }) {
                     <p>{plateData.description}</p>
                     <div className={styles.priceRow}>
                       <span>Preço</span>
-                      <strong>R$ {Number(plateData.price).toFixed(2)}</strong>
+                      <strong>{formatCurrency(plateData.price)}</strong>
                     </div>
                     <div className={styles.quantityRow}>
                       <span>Quantidade</span>
@@ -41,7 +39,7 @@ export default function PlatePopup({ plateData, onClose, onAddToCart }) {
                     </div>
                     <div className={styles.totalRow}>
                       <span>Total</span>
-                      <strong>R$ {totalPrice.toFixed(2)}</strong>
+                      <strong>{formatCurrency(totalPrice)}</strong>
                     </div>
                     <div className={styles.buttonRow}>
                       <button onClick={handleAdd}>Add to cart</button>

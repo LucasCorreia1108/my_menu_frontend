@@ -1,47 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import authServices from "../../services/auth";
-import orderServices from "../../services/order";
+import useAuthServices from "../../services/auth";
+import useOrderServices from "../../services/order";
 import styles from "./profile.module.css";
 import { LuLogOut } from "react-icons/lu";
 import Loading from "../loading/loading";
+import { getStoredAuth, subscribeToAuthChanges } from "../../utils/authStorage";
 
 export default function Profile() {
-  const { logout } = authServices();
-  const { getUserOrders, orderLoading, refetchOrders } = orderServices();
+  const { logout } = useAuthServices();
+  const { getUserOrders, orderLoading, refetchOrders } = useOrderServices();
   const navigate = useNavigate();
-  const [authData, setAuthData] = useState(() => {
-    const savedAuth = localStorage.getItem("auth");
-
-    if (!savedAuth) return null;
-
-    try {
-      return JSON.parse(savedAuth);
-    } catch {
-      return null;
-    }
-  });
+  const [authData, setAuthData] = useState(() => getStoredAuth());
 
   useEffect(() => {
     const updateAuthData = () => {
-      const savedAuth = localStorage?.getItem("auth");
-
-      if (!savedAuth) {
-        setAuthData(null);
-        return;
-      }
-
-      try {
-        setAuthData(JSON.parse(savedAuth));
-      } catch {
-        setAuthData(null);
-      }
+      setAuthData(getStoredAuth());
     };
 
     updateAuthData();
-    window.addEventListener("authChanged", updateAuthData);
-
-    return () => window.removeEventListener("authChanged", updateAuthData);
+    return subscribeToAuthChanges(updateAuthData);
   }, []);
 
   useEffect(() => {
@@ -53,7 +31,7 @@ export default function Profile() {
     if (refetchOrders && authData?.user?._id) {
       getUserOrders(authData?.user?._id);
     }
-  }, [authData, refetchOrders, navigate]);
+  }, [authData, getUserOrders, refetchOrders, navigate]);
 
   const handleLogout = () => {
     logout();

@@ -1,7 +1,7 @@
 import Navbar from "./components/navbar/navbar";
 import { Outlet } from "react-router-dom";
 import Footer from "./components/footer/footer";
-import { CartProvider } from "./contexts/useCartContext";
+import { CartProvider } from "./contexts/cartProvider";
 
 export default function App() {
   return (
