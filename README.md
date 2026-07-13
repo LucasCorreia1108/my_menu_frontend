@@ -1,8 +1,6 @@
 # My Menu — Frontend
 
-Frontend do **My Menu**, um cardápio digital de um restaurante de culinária italiana onde o
-cliente navega pelos pratos, monta um carrinho e finaliza o pedido. A aplicação é uma SPA em
-React + Vite que consome uma API REST externa.
+Sistema completo de gerenciamento de cardápio e pedidos para restaurantes desenvolvido com React, Node.js, Express e MongoDB.
 
 ## Funcionalidades
 
